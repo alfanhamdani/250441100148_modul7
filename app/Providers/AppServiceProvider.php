@@ -21,8 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('kelola-buku', function (User $user) {
-            return $user->hasRole(['admin', 'petugas']);
-        });
+        if ($this->app->environment('production')) {
+            \URL::forceScheme('https');
+        }
     }
 }

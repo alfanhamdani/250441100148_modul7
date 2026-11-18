@@ -4,7 +4,7 @@
     "regions": ["sin1"],
     "functions": {
         "api/index.php": {
-            "runtime": "vercel-php@0.8.0"
+            "runtime": "vercel-php@0.9.0"
         }
     },
     "routes": [
@@ -35,6 +35,7 @@
         "APP_SERVICES_CACHE": "/tmp/services.php",
         "VIEW_COMPILED_PATH": "/tmp/views",
         "CACHE_STORE": "array",
-        "SESSION_DRIVER": "cookie"
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "database"
     }
 }

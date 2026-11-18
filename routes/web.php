@@ -11,6 +11,16 @@ Route::redirect('/', '/login');
 // Rute Umum yang memerlukan autentikasi
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
+        $user = auth()->user();
+
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole('petugas')) {
+            return redirect()->route('petugas.dashboard');
+        } elseif ($user->hasRole('siswa')) {
+            return redirect()->route('siswa.dashboard');
+        }
+
         return view('dashboard');
     })->name('dashboard');
 

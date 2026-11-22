@@ -40,6 +40,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
     Route::put('/buku/{id}', [BukuController::class, 'update'])->name('buku.update');
     Route::delete('/buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
+    Route::get('/buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit'); // Route untuk menampilkan form edit
+    Route::get('/buku', [BukuController::class, 'index'])->name('buku.index'); // Halaman daftar buku
 
     // Tambahkan ini jika belum ada:
     Route::get('/buku/pinjam/{id}', [PeminjamanController::class, 'create'])->name('buku.pinjam');

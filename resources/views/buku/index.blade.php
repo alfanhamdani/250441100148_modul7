@@ -23,29 +23,56 @@
                         </div>
                     @endif
 
-                    <!-- Form Tambah Buku (Menggunakan Route POST biasa) -->
+                    <!-- Card Form Tambah / Edit Buku -->
                     <div class="card mb-4 p-3 shadow-sm">
-                        <h4>Tambah Buku Baru</h4>
+                        <!-- Judul form berubah dinamis -->
+                        <h4>{{ isset($buku) ? 'Edit Buku: ' . $buku->judul : 'Tambah Buku Baru' }}</h4>
+
                         @can('kelola-buku')
-                            <form action="{{ route('buku.store') }}" method="POST">
+                            <!-- Form mengarah ke update jika mode edit, atau store jika tambah baru -->
+                            <form action="{{ isset($buku) ? route('buku.update', $buku->id) : route('buku.store') }}"
+                                method="POST">
                                 @csrf
+
+                                <!-- Tambahkan method PUT jika sedang dalam mode edit -->
+                                @if(isset($buku))
+                                    @method('PUT')
+                                @endif
+
                                 <div class="mb-3">
                                     <label class="form-label">Kategori ID</label>
-                                    <input type="text" name="kategori_id" class="form-control" required>
+                                    <!-- Perhatikan bagian value di bawah ini -->
+                                    <input type="text" name="kategori_id" class="form-control"
+                                        value="{{ old('kategori_id', $buku->kategori_id ?? '') }}" required>
                                 </div>
+
                                 <div class="mb-3">
                                     <label class="form-label">Judul Buku</label>
-                                    <input type="text" name="judul" class="form-control" required>
+                                    <input type="text" name="judul" class="form-control"
+                                        value="{{ old('judul', $buku->judul ?? '') }}" required>
                                 </div>
+
                                 <div class="mb-3">
                                     <label class="form-label">Penulis</label>
-                                    <input type="text" name="penulis" class="form-control" required>
+                                    <input type="text" name="penulis" class="form-control"
+                                        value="{{ old('penulis', $buku->penulis ?? '') }}" required>
                                 </div>
+
                                 <div class="mb-3">
                                     <label class="form-label">Tahun Terbit</label>
-                                    <input type="number" name="tahun_terbit" class="form-control" required>
+                                    <input type="number" name="tahun_terbit" class="form-control"
+                                        value="{{ old('tahun_terbit', $buku->tahun_terbit ?? '') }}" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
+
+                                <!-- Tombol submit dinamis -->
+                                <button type="submit" class="btn {{ isset($buku) ? 'btn-success' : 'btn-primary' }}">
+                                    {{ isset($buku) ? 'Perbarui Data' : 'Simpan' }}
+                                </button>
+
+                                <!-- Tombol Batal untuk kembali ke mode tambah -->
+                                @if(isset($buku))
+                                    <a href="{{ route('buku.index') }}" class="btn btn-secondary">Batal</a>
+                                @endif
                             </form>
                         @endcan
                     </div>
@@ -72,6 +99,9 @@
                                         <td>{{ $buku->tahun_terbit }}</td>
                                         <td>
                                             @can('kelola-buku')
+                                                <!-- Tombol Edit yang menghubungkan ke halaman edit -->
+                                                <a href="{{ route('buku.edit', $buku->id) }}"
+                                                    class="btn btn-warning btn-sm me-1">Edit</a>
                                                 <!-- Tombol Hapus (Menyesuaikan Soal A3/Soal 2c nantinya) -->
                                                 <form action="{{ route('buku.destroy', $buku->id) }}" method="POST"
                                                     class="d-inline">

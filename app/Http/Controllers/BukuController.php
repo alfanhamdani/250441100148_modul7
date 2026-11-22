@@ -35,6 +35,14 @@ class BukuController extends Controller
         return view('buku.index', compact('bukus'));
     }
 
+    public function edit($id)
+    {
+        $bukus = Buku::all();
+        $buku = Buku::findOrFail($id); // Mode edit dengan data buku yang dipilih
+
+        return view('buku.index', compact('bukus', 'buku'));
+    }
+
     // Menyimpan Buku Baru (POST)
     public function store(Request $request)
     {
@@ -52,11 +60,14 @@ class BukuController extends Controller
             'tahun_terbit' => $request->tahun_terbit,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Buku berhasil ditambahkan',
-            'data' => $buku
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Buku berhasil ditambahkan',
+        //     'data' => $buku
+        // ]);
+
+        // UBAH MENJADI REDIRECT KE HALAMAN INDEX DENGAN PESAN SUKSES:
+        return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan!');
     }
 
     // Memperbarui Data Buku (PUT/PATCH)
@@ -77,11 +88,14 @@ class BukuController extends Controller
             'tahun_terbit' => $request->tahun_terbit,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Buku berhasil diperbarui',
-            'data' => $buku
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Buku berhasil diperbarui',
+        //     'data' => $buku
+        // ]);
+
+        // UBAH MENJADI REDIRECT KE HALAMAN UTAMA DENGAN PESAN SUKSES:
+        return redirect()->route('buku.index')->with('success', 'Data buku berhasil diperbarui!');
     }
 
     // Menghapus Buku (DELETE)
@@ -90,10 +104,12 @@ class BukuController extends Controller
         $buku = Buku::findOrFail($id);
         $buku->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Buku berhasil dihapus'
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Buku berhasil dihapus'
+        // ]);
+
+        return redirect()->route('buku.index')->with('success', 'Data buku berhasil dihapus!');
     }
 
     public function katalogSiswa()

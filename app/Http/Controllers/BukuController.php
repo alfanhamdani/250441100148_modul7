@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use App\Models\Buku;
+use App\Models\Kategori; // Jangan lupa import model Kategori
 
 class BukuController extends Controller
 {
@@ -32,25 +33,41 @@ class BukuController extends Controller
 
         // Jika diakses langsung lewat browser, ambil datanya dan kirimkan ke view Blade
         $bukus = Buku::all();
-        return view('buku.index', compact('bukus'));
+        $kategoris = Kategori::all(); // Ambil semua data kategori
+        // 3. Sertakan $kategoris ke dalam compact
+        return view('buku.index', compact('bukus', 'kategoris'));
     }
 
     public function edit($id)
     {
         $bukus = Buku::all();
         $buku = Buku::findOrFail($id); // Mode edit dengan data buku yang dipilih
+        $kategoris = Kategori::all();
 
-        return view('buku.index', compact('bukus', 'buku'));
+        return view('buku.index', compact('buku', 'bukus', 'kategoris'));
     }
 
     // Menyimpan Buku Baru (POST)
     public function store(Request $request)
     {
         $request->validate([
-            'kategori_id' => 'required',
-            'judul' => 'required|string|max:255',
-            'penulis' => 'required|string|max:255',
-            'tahun_terbit' => 'required|integer',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'judul' => 'required|string|min:3|max:150',
+            'penulis' => 'required|string|min:3|max:100',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
+        ], [
+            'kategori_id.required' => 'Kategori wajib diisi.',
+            'kategori_id.exists' => 'Kategori yang dipilih tidak valid / tidak ada di database.',
+            'judul.required' => 'Judul buku wajib diisi.',
+            'judul.min' => 'Judul buku minimal harus 3 karakter.',
+            'judul.max' => 'Judul buku maksimal 150 karakter.',
+            'penulis.required' => 'Nama penulis wajib diisi.',
+            'penulis.min' => 'Nama penulis minimal harus 3 karakter.',
+            'penulis.max' => 'Nama penulis maksimal 100 karakter.',
+            'tahun_terbit.required' => 'Tahun terbit wajib diisi.',
+            'tahun_terbit.integer' => 'Tahun terbit harus berupa bilangan bulat.',
+            'tahun_terbit.min' => 'Tahun terbit minimal adalah tahun 1900.',
+            'tahun_terbit.max' => 'Tahun terbit tidak boleh lebih dari tahun sekarang.',
         ]);
 
         $buku = Buku::create([
@@ -74,10 +91,23 @@ class BukuController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'kategori_id' => 'required',
-            'judul' => 'required|string|max:255',
-            'penulis' => 'required|string|max:255',
-            'tahun_terbit' => 'required|integer',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'judul' => 'required|string|min:3|max:150',
+            'penulis' => 'required|string|min:3|max:100',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
+        ], [
+            'kategori_id.required' => 'Kategori wajib diisi.',
+            'kategori_id.exists' => 'Kategori yang dipilih tidak valid / tidak ada di database.',
+            'judul.required' => 'Judul buku wajib diisi.',
+            'judul.min' => 'Judul buku minimal harus 3 karakter.',
+            'judul.max' => 'Judul buku maksimal 150 karakter.',
+            'penulis.required' => 'Nama penulis wajib diisi.',
+            'penulis.min' => 'Nama penulis minimal harus 3 karakter.',
+            'penulis.max' => 'Nama penulis maksimal 100 karakter.',
+            'tahun_terbit.required' => 'Tahun terbit wajib diisi.',
+            'tahun_terbit.integer' => 'Tahun terbit harus berupa bilangan bulat.',
+            'tahun_terbit.min' => 'Tahun terbit minimal adalah tahun 1900.',
+            'tahun_terbit.max' => 'Tahun terbit tidak boleh lebih dari tahun sekarang.',
         ]);
 
         $buku = Buku::findOrFail($id);

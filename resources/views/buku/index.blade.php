@@ -40,28 +40,50 @@
                                 @endif
 
                                 <div class="mb-3">
-                                    <label class="form-label">Kategori ID</label>
-                                    <!-- Perhatikan bagian value di bawah ini -->
-                                    <input type="text" name="kategori_id" class="form-control"
-                                        value="{{ old('kategori_id', $buku->kategori_id ?? '') }}" required>
+                                    <label class="form-label">Kategori Buku</label>
+                                    <select name="kategori_id"
+                                        class="form-select @error('kategori_id') is-invalid @enderror" required>
+                                        <option value="">-- Pilih Kategori --</option>
+                                        @foreach($kategoris as $kategori)
+                                            <option value="{{ $kategori->id }}" {{ old('kategori_id', $buku->kategori_id ?? '') == $kategori->id ? 'selected' : '' }}>
+                                                {{ $kategori->nama }}
+                                                <!-- Sesuaikan dengan nama kolom nama kategori di database Anda (misal: nama atau nama_kategori) -->
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('kategori_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Judul Buku</label>
-                                    <input type="text" name="judul" class="form-control"
+                                    <input type="text" name="judul"
+                                        class="form-control @error('judul') is-invalid @enderror"
                                         value="{{ old('judul', $buku->judul ?? '') }}" required>
+                                    @error('judul')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Penulis</label>
-                                    <input type="text" name="penulis" class="form-control"
+                                    <input type="text" name="penulis"
+                                        class="form-control @error('penulis') is-invalid @enderror"
                                         value="{{ old('penulis', $buku->penulis ?? '') }}" required>
+                                    @error('penulis')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Tahun Terbit</label>
-                                    <input type="number" name="tahun_terbit" class="form-control"
+                                    <input type="number" name="tahun_terbit"
+                                        class="form-control @error('tahun_terbit') is-invalid @enderror"
                                         value="{{ old('tahun_terbit', $buku->tahun_terbit ?? '') }}" required>
+                                    @error('tahun_terbit')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <!-- Tombol submit dinamis -->
@@ -92,7 +114,7 @@
                             <tbody>
                                 @foreach($bukus as $buku)
                                     <tr>
-                                        <td>{{ $buku->kategori_id ?? $buku->kategori }}</td>
+                                        <td>{{ $buku->kategori->nama ?? '-' }}</td>
 
                                         <td>{{ $buku->judul }}</td>
                                         <td>{{ $buku->penulis }}</td>
